@@ -1,6 +1,6 @@
 #!/usr/bin/expect
 
-set username [lindex $argv 0]
+set password [lindex $argv 0]
 
 spawn /opt/hadoop/sbin/start-dfs.sh 
 expect {

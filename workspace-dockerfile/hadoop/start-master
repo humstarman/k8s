@@ -29,6 +29,7 @@ sed -i "s/hadoop-master/${THIS_IP}/" $HADOOP_HOME/etc/hadoop/yarn-site.xml
 for ip in "localhost $THIS_IP 127.0.0.1 0.0.0.0"; do
   /opt/auto-cp-ssh-id.sh root $PASSWD $ip
 done
+echo '' > $HADOOP_CONF_DIR/slaves
 
 #/opt/worker-discovery.sh &
 #echo "*/1 * * * * root /opt/worker-discovery.sh" >> /etc/crontab

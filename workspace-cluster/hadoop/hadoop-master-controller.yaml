@@ -16,6 +16,10 @@ spec:
         env:
         - name: DSCV
           value: hadoop-worker
+        - name: PASSWD 
+          value: 9ol.8ik, 
+        - name: INTERVAL 
+          value: "10" 
         ports:
         - containerPort: 3333
         - containerPort: 8000

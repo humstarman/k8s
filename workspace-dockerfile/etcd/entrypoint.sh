@@ -30,6 +30,7 @@ echo "$(date) - $0 - svc discovery: $DSCV"
 service ssh start
 
 ETCD_NODES=""
+TRIES=10
 for i in $(seq -s ' ' 1 $N_NODES); do
   ETCD_NODES+=','
   j=$[$i-1]
@@ -37,16 +38,21 @@ for i in $(seq -s ' ' 1 $N_NODES); do
   if [ "$j" == "$ID" ]; then
     IP=$THIS_IP
   else
-    #IP=""
-    #k=0
-    #while [ "$k" -lt "$TRY" ];do
-      #IP=$(getent hosts $NAME.$DSCV | awk -F ' ' '{print $1}')
-      #if [[ $IP =~ ^([0-9]{1,2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.([0-9]{1,2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.([0-9]{1,2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.([0-9]{1,2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$ ]]; then
-        #break
-      #fi
-      #k=$[$k+1]
-    #done
+    IP=""
+    TRY=0
     IP=$(getent hosts $NAME.$DSCV | awk -F ' ' '{print $1}')
+    while [ -z "$IP" ]; do
+      sleep 1
+      TRY=$[${TRY}+1]
+      if [ "$TRY" -gt "$TRIES" ]; then
+        echo "=== Cannot resolve the DNS entry for ${NAME}. Has the service been created yet, and is SkyDNS functional?"
+        echo "=== See http://kubernetes.io/v1.1/docs/admin/dns.html for more details on DNS integration."
+        echo "=== Sleeping ${WAIT}s before pod exit."
+        sleep $WAIT
+        exit 0
+      fi
+      IP=$(getent hosts $NAME.$DSCV | awk -F ' ' '{print $1}')
+    done
   fi
   ETCD_NODES+="$NAME=http://$IP:2380"
 done

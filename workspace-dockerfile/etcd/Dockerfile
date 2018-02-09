@@ -2,7 +2,7 @@ FROM lowyard/openjdk-8-jdk
 
 MAINTAINER Lue Young <lueyoung7@163.com>
 
-ENV etcd_ver v3.2.15
+ENV etcd_ver v3.3.0
 
 COPY build /opt
 

@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: redis-slave
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        component: redis-slave
+    spec:
+      containers:
+      - name: redis-slave
+        image: 172.31.78.217:5000/redis
+        command: ["/entrypoint.sh"]
+        env:
+        - name: DSCV
+          value: redis-master
+        - name: ROLE
+          value: SLAVE 
+        ports:
+        - containerPort: 6379 

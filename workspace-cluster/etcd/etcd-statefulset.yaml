@@ -1,0 +1,24 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: etcd
+spec:
+  serviceName: "etcd"
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        component: etcd
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: etcd
+        image: 172.31.78.217:5000/etcd
+        command: ["/entrypoint.sh"]
+        env:
+        - name: N_NODES
+          value: "3"
+        - name: TOKEN 
+          value: "token-0x00"
+        - name: DSCV 
+          value: "etcd"

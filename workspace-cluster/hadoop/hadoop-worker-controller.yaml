@@ -1,0 +1,27 @@
+kind: Deployment 
+apiVersion: extensions/v1beta1
+metadata:
+  name: hadoop-worker-controller
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        component: hadoop-worker
+    spec:
+      containers:
+      - name: hadoop-worker
+        image: 172.31.78.217:5000/hadoop
+        command: ["/start-worker"]
+        env:
+        - name: DSCV
+          value: hadoop-master
+        ports:
+        - containerPort: 3333
+        - containerPort: 8000
+        - containerPort: 8088
+        - containerPort: 50070
+        resources:
+          requests:
+            cpu: 100m
+            memory: 2000Mi

@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Copyright 2015 The Kubernetes Authors All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+. /start-common.sh
+
+service ssh start
+
+THIS_IP=$(hostname -i)
+HADOOP_HOME=/opt/hadoop
+HADOOP_PREFIX=${HADOOP_HOME}
+HADOOP_CONF_DIR="${HADOOP_HOME/etc/hadoop}"
+HADOOP_YARN_HOME=${HADOOP_HOME}
+
+sed -i "s/hadoop-master/${THIS_IP}/" $HADOOP_HOME/etc/hadoop/core-site.xml
+sed -i "s/hadoop-master/${THIS_IP}/" $HADOOP_HOME/etc/hadoop/yarn-site.xml
+for ip in "localhost $THIS_IP 127.0.0.1 0.0.0.0"; do
+  /opt/auto-cp-ssh-id.sh root $PASSWD $ip
+done
+
+#/opt/worker-discovery.sh &
+#echo "*/1 * * * * root /opt/worker-discovery.sh" >> /etc/crontab
+#/usr/sbin/cron
+
+#$HADOOP_HOME/bin/hdfs namenode -format
+
+#$HADOOP_HOME/bin/hdfs --daemon start namenode
+#$HADOOP_HOME/sbin/start-dfs.sh &
+/start-dfs-yes.sh $PASSWD &
+
+#$HADOOP_HOME/bin/yarn --daemon start resourcemanager
+#$HADOOP_HOME/bin/yarn --daemon start nodemanager
+#$HADOOP_HOME/bin/yarn --daemon start proxyserver
+$HADOOP_HOME/sbin/start-yarn.sh &
+
+#$HADOOP_HOME/bin/mapred --daemon start historyserver
+
+#$HADOOP_PREFIX/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start namenode &
+#$HADOOP_YARN_HOME/sbin/yarn-daemon.sh --config $HADOOP_CONF_DIR start resourcemanager &
+#$HADOOP_YARN_HOME/sbin/yarn-daemons.sh --config $HADOOP_CONF_DIR start nodemanager &
+#$HADOOP_YARN_HOME/sbin/yarn-daemon.sh --config $HADOOP_CONF_DIR start proxyserver &
+#$HADOOP_PREFIX/sbin/mr-jobhistory-daemon.sh --config $HADOOP_CONF_DIR start historyserver &
+
+/opt/slave-discovery.sh

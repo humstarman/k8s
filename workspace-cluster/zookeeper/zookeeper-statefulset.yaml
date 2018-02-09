@@ -1,0 +1,22 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: zookeeper
+spec:
+  serviceName: "zookeeper"
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        component: zookeeper
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: zookeeper
+        image: 172.31.78.217:5000/zookeeper
+        command: ["/entrypoint.sh"]
+        env:
+        - name: N_NODES
+          value: "3"
+        - name: DSCV
+          value: "zookeeper"

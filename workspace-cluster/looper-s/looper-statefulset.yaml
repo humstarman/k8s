@@ -1,0 +1,21 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: looper
+spec:
+  serviceName: "looper"
+  replicas: 6
+  template:
+    metadata:
+      labels:
+        app: looper
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: looper
+        image: 192.168.100.154:5000/looper
+        env:
+          - name: N_NODES
+            value: "3"
+          - name: DSCV
+            value: "looper"

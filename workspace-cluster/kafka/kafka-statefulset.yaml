@@ -1,0 +1,22 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: kafka
+spec:
+  serviceName: "kafka"
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        component: kafka
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: kafka
+        image: 172.31.78.217:5000/kafka
+        command: ["/entrypoint.sh"]
+        env:
+        - name: N_NODES
+          value: "3"
+        - name: DSCV
+          value: "zookeeper"

@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: redis-master
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: redis-master
+    spec:
+      containers:
+      - name: redis-master
+        image: 172.31.78.217:5000/redis
+        command: ["/entrypoint.sh"]
+        env:
+        - name: DSCV
+          value: redis-master
+        - name: ROLE
+          value: MASTER 

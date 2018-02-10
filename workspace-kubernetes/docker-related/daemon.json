@@ -1,0 +1,16 @@
+{
+  "data-root": "/opt/docker",
+  "registry-mirror" : [
+    "https://docker.mirrors.ustc.edu.cn",
+    "hub-mirror.c.163.com"
+  ],
+  "insecure-registries" : [
+    "192.168.0.154:5000",
+    "192.168.0.159:5000",
+    "172.31.78.216:5000",
+    "172.31.78.217:5000"
+  ],
+  "debug" : true,
+  "experimental" : true,
+  "max-concurrent-downloads" : 10
+}

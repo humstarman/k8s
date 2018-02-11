@@ -9,7 +9,7 @@ IF0=$(cat /etc/rc.local | grep "sleep 60 && \/sbin\/iptables -P FORWARD ACCEPT")
 
 if [ "CentOS" == "$DistributorID" ]; then
   cd /etc/yum.repos.d && \
-  mv CentOS-Base.repo CentOS-Base.repo.bak && \
+  if [ -f CentOS-Base.repo ]; then mv -f CentOS-Base.repo CentOS-Base.repo.bak; fi && \
   wget -O CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo && \
   yum clean all && \
   yum makecache && \

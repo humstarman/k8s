@@ -12,6 +12,7 @@ ExecStart=/usr/local/bin/kube-proxy \
   --cluster-cidr=${SERVICE_CIDR} \
   --kubeconfig=/etc/kubernetes/kube-proxy.kubeconfig \
   --logtostderr=true \
+  --proxy-mode=iptables \
   --v=2
 Restart=on-failure
 RestartSec=5

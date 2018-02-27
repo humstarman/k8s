@@ -19,5 +19,6 @@ RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 ADD cassandra.yaml /opt/cassandra/conf
-ADD entrypoint.sh /
+ADD start-master.sh /
+ADD start-worker.sh /
 ENV PATH $PATH:/opt/cassandra/bin

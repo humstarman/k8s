@@ -4,6 +4,7 @@ metadata:
   name: etcd
 spec:
   serviceName: "etcd"
+  podManagementPolicy: Parallel
   replicas: 3
   template:
     metadata:

@@ -35,9 +35,9 @@ spec:
         - containerPort: 9042 
         - containerPort: 9160 
         volumeMounts:
-        - name: gluster-cassandra-volume-for-worker 
+        - name: gluster-volume 
           mountPath: "/mnt"
       volumes:
-      - name: gluster-cassandra-volume-for-worker
+      - name: gluster-volume
         persistentVolumeClaim:
           claimName: glusterfs-cassandra-for-worker

@@ -32,7 +32,10 @@ sed -i "s/- seeds: \"a.b.c.d,a.b.c.d\"/        - seeds: \"$SEED\"/g" /opt/cassan
 # 3 listen address
 sed -i "s/listen_address: a.b.c.d/listen_address: ${THIS_IP}/g" /opt/cassandra/conf/cassandra.yaml
 
-# 5 listen address
+# 4 listen address
 sed -i "s/rpc_address: a.b.c.d/rpc_address: ${THIS_IP}/g" /opt/cassandra/conf/cassandra.yaml
+
+# 5 data file directories 
+sed -i "s/var\/lib/mnt\/$(hostname -s)/g" /opt/cassandra/conf/cassandra.yaml
 
 /opt/cassandra/bin/cassandra -f -R

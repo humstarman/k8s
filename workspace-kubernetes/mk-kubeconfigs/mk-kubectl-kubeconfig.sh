@@ -28,3 +28,8 @@ kubectl config set-context kubernetes \
   --user=admin
 # 设置默认上下文
 kubectl config use-context kubernetes
+# 添加kubectl的自动补全
+IF0=$(cat /etc/profile | grep "source <(kubectl completion bash)")
+if [ -z "$IF0" ]; then
+  echo 'source <(kubectl completion bash)' >> /etc/profile
+fi

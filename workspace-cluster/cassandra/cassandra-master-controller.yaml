@@ -1,27 +1,36 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1beta1
+kind: StatefulSet 
 metadata:
   name: cassandra-master
 spec:
+  serviceName: "cassandra-master"
   replicas: 1
   template:
     metadata:
       labels:
         component: cassandra-master
     spec:
+      terminationGracePeriodSeconds: 10
       containers:
       - name: cassandra-master
         image: 172.31.78.217:5000/cassandra
-        command: ["/entrypoint.sh"]
+        command: ["/start-master.sh"]
         env:
-        - name: DSCV
-          value: cassandra-master
-        - name: NET_ID
-          value: 172.30. 
         - name: CLUSTER_NAME
-          value: test0x00
+          valueFrom:
+            configMapKeyRef:
+              name: dc-config
+              key: cassandra.cluster-name
         ports:
-            - containerPort: 7000 
-            - containerPort: 7199 
-            - containerPort: 9042 
-            - containerPort: 9160 
+        - containerPort: 7000 
+        - containerPort: 7199 
+        - containerPort: 9042 
+        - containerPort: 9160 
+        volumeMounts:
+        - name: gluster-cassandra-volume-for-master
+          mountPath: "/mnt"
+      volumes:
+      - name: gluster-cassandra-volume-for-master
+        persistentVolumeClaim:
+          claimName: glusterfs-cassandra-for-master
+

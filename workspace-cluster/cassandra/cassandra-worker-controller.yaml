@@ -1,27 +1,43 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   name: cassandra-worker
 spec:
+  serviceName: "cassandra-worker"
+  podManagementPolicy: Parallel
   replicas: 3
   template:
     metadata:
       labels:
         component: cassandra-worker
     spec:
+      terminationGracePeriodSeconds: 10
       containers:
       - name: cassandra-worker
         image: 172.31.78.217:5000/cassandra
-        command: ["/entrypoint.sh"]
+        command: ["/start-worker.sh"]
         env:
         - name: DSCV
           value: cassandra-master
-        - name: NET_ID
-          value: 172.30. 
+        - name: NET_ID 
+          valueFrom:
+            configMapKeyRef:
+              name: dc-config
+              key: dc.net-id
         - name: CLUSTER_NAME
-          value: test0x00
+          valueFrom:
+            configMapKeyRef:
+              name: dc-config
+              key: cassandra.cluster-name
         ports:
-            - containerPort: 7000 
-            - containerPort: 7199 
-            - containerPort: 9042 
-            - containerPort: 9160 
+        - containerPort: 7000 
+        - containerPort: 7199 
+        - containerPort: 9042 
+        - containerPort: 9160 
+        volumeMounts:
+        - name: gluster-cassandra-volume-for-worker 
+          mountPath: "/mnt"
+      volumes:
+      - name: gluster-cassandra-volume-for-worker
+        persistentVolumeClaim:
+          claimName: glusterfs-cassandra-for-worker

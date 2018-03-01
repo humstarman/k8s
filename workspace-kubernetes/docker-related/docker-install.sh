@@ -21,6 +21,7 @@ if [ "CentOS" == "$DistributorID" ]; then
     --add-repo \
     https://download.docker.com/linux/centos/docker-ce.repo
   yum install -y docker-ce
+  yum install -y conntrack
   
   # rc.local
   if [ -z "$IF0" ]; then
@@ -53,6 +54,7 @@ elif [ "Ubuntu" == "$DistributorID" ]; then
    stable"
   apt-get update
   apt-get install -y docker-ce
+  apt-get install -y conntrack
   
   # rc.local
   if [ -z "$IF0" ]; then

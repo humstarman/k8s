@@ -13,6 +13,7 @@ ExecStart=/usr/local/bin/kube-proxy \
   --kubeconfig=/etc/kubernetes/kube-proxy.kubeconfig \
   --logtostderr=true \
   --proxy-mode=iptables \
+  --masquerade-all \
   --v=2
 Restart=on-failure
 RestartSec=5

@@ -32,8 +32,10 @@
 $ gluster peer probe node-3</code></pre>
 
 ---
-after that, run:
-$ gluster peer status
+		after that, run:
+```sh
+		$ gluster peer status
+```
 to check
 
 3.config volume
@@ -63,12 +65,15 @@ to check
 5.0 prerequisites
 ---
 		may need:
-<pre><code>glusterfs
-glusterfs-fuse</code></pre>
+```console
+glusterfs
+glusterfs-fuse
+```
 5.1 apply endpoints
 ---
 		for instace:
-<pre><code>$ cat glusterfs-endpoints.yaml
+```console
+$ cat glusterfs-endpoints.yaml
 apiVersion: v1
 kind: Endpoints
 metadata:
@@ -81,6 +86,7 @@ subsets:
   ports:
   - port: 1990
     protocol: TCP</code></pre>
+```
 5.2 apply service 
 ---
 		for instace:

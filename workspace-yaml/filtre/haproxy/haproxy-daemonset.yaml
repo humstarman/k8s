@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    component: haproxy
+  name: haproxy-node
+  namespace: filtre
+spec:
+  selector:
+    matchLabels:
+      component: haproxy
+  template:
+    metadata:
+      labels:
+        component: haproxy
+    spec:
+      terminationGracePeriodSeconds: 3
+      hostNetwork: true
+      containers:
+      - name: haproxy-node
+        image: 172.31.78.217:5000/haproxy
+        command:
+        - haproxy
+        - -f
+        - /etc/haproxy/haproxy.cfg
+        volumeMounts:
+        - name: haproxy-config 
+          mountPath: /etc/haproxy
+          readOnly: true
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - /liveness-probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 5
+      volumes:
+      - name: haproxy-config 
+        configMap:
+          name: haproxy-config 
+

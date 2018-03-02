@@ -1,9 +1,9 @@
-###0. Prerequisites
+###Prerequisites
 ===
-enable required kernel modulers
-run script: prepare-kernel-modules.sh
-on each glusterfs node
-(using ansible)
+		enable required kernel modulers
+		run script: prepare-kernel-modules.sh
+		on each glusterfs node
+		(using ansible)
 
 ###1. install glusterfs
 ===

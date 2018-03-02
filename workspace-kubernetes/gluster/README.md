@@ -18,7 +18,7 @@
 ---
 2.config glusterfs
 ===
-2.1config /etc/hosts
+2.1 config /etc/hosts
 ---
 		replace the information of hosts in script config-etc-hosts.sh according to yout practical situation
 		then, run the script on each glusterfs node
@@ -36,39 +36,39 @@ after that, run:
 $ gluster peer status
 to check
 
-3. config volume
+3.config volume
 ===
 3.1 create a volume
 ---
-for the type of Distribute, run:
-$ gluster volume create k8s-volume transport tcp node-1:/opt/gfs_data node-2:/opt/gfs_data node-3:/opt/gfs_data force
-for the type of Replicate:3, run:
-$ gluster volume create k8s-volume replica 3 transport tcp node-1:/opt/gfs_data node-2:/opt/gfs_data node-3:/opt/gfs_data force
+		for the type of Distribute, run:
+<pre><code>$ gluster volume create k8s-volume transport tcp node-1:/opt/gfs_data node-2:/opt/gfs_data node-3:/opt/gfs_data force</code></pre>
+		for the type of Replicate:3, run:
+<pre><code>$ gluster volume create k8s-volume replica 3 transport tcp node-1:/opt/gfs_data node-2:/opt/gfs_data node-3:/opt/gfs_data force</code></pre>
 3.2 check
 ---
-using:
-$ gluster volume info
+		using:
+<pre><code>$ gluster volume info</code></pre>
 3.3 start
 ---
-start the glusterfs volume, using:
-$ gluster volume start ${VOLUME_NAME}
+		start the glusterfs volume, using:
+<pre><code>$ gluster volume start ${VOLUME_NAME}</code></pre>
 
-4. tune glusterfs
+4.tune glusterfs
 ===
-modify tune-glusterfs.sh according to yout practical situation
-then, run the script
+	modify tune-glusterfs.sh according to yout practical situation
+	then, run the script
 
-5. using glusterfs in kubernetes 
+5.using glusterfs in kubernetes 
 ===
 5.0 prerequisites
 ---
-may need:
-glusterfs
-glusterfs-fuse
+		may need:
+<pre><code>glusterfs
+glusterfs-fuse</code></pre>
 5.1 apply endpoints
 ---
-for instace:
-$ cat glusterfs-endpoints.yaml
+		for instace:
+<pre><code>$ cat glusterfs-endpoints.yaml
 apiVersion: v1
 kind: Endpoints
 metadata:
@@ -80,11 +80,11 @@ subsets:
   - ip: 172.31.78.217
   ports:
   - port: 1990
-    protocol: TCP
+    protocol: TCP</code></pre>
 5.2 apply service 
 ---
-for instace:
-$ cat glusterfs-service.yaml
+		for instace:
+<pre><code>$ cat glusterfs-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -94,6 +94,7 @@ spec:
   ports:
   - port: 1990
     protocol: TCP
-    targetPort: 1990
+    targetPort: 1990</code></pre>
 
 After all above, your can create pv and pvc objects to use gluster distributed file system.
+---

@@ -1,5 +1,4 @@
 ###0.Prerequisites
-===
 		enable required kernel modulers<br>
 		run script: prepare-kernel-modules.sh<br>
 		on each glusterfs node<br>

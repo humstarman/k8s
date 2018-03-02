@@ -1,9 +1,9 @@
 0.Prerequisites
 ===
-		enable required kernel modulers<br>
-		run script: prepare-kernel-modules.sh<br>
-		on each glusterfs node<br>
-		(using ansible)<br>
+		enable required kernel modulers
+		run script: prepare-kernel-modules.sh
+		on each glusterfs node
+		(using ansible)
 
 ---
 1.install glusterfs
@@ -25,7 +25,8 @@
 		(using ansible)
 2.2 add glusterfs nodes into the glusterfs cluster 
 ---
-		!!! only run this on one node
+!!! only run this on one node
+---
 		for example, there are three nodes in the cluster, which are node-1, node-2 and node-3
 		on node-1, run:
 <pre><code>$ gluster peer probe node-2
@@ -34,10 +35,11 @@ $ gluster peer probe node-3</code></pre>
 ---
 		after that, run:
 ```sh
-		$ gluster peer status
+$ gluster peer status
 ```
 to check
 
+---
 3.config volume
 ===
 3.1 create a volume
@@ -49,12 +51,15 @@ to check
 3.2 check
 ---
 		using:
-<pre><code>$ gluster volume info</code></pre>
-3.3 start
+```sh
+$ gluster volume info
+```
+3.3 start the volume
 ---
 		start the glusterfs volume, using:
 <pre><code>$ gluster volume start ${VOLUME_NAME}</code></pre>
 
+---
 4.tune glusterfs
 ===
 	modify tune-glusterfs.sh according to yout practical situation

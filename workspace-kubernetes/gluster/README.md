@@ -1,4 +1,4 @@
-####0.Prerequisites
+0.Prerequisites
 ===
 		enable required kernel modulers<br>
 		run script: prepare-kernel-modules.sh<br>
@@ -6,29 +6,30 @@
 		(using ansible)<br>
 
 ---
-####1.install glusterfs
+1.install glusterfs
 ===
 		modify field named GlusterVer in script glusterfs-install.sh to set expected version
-then, run glusterfs-install.sh on each glusterfs node
-(using ansible)
-after the installation, replace VOL_FOR_GLUSTER item in script config-glusterfs.sh according to yout practical situation 
-then, run the script on each glusterfs node
-(using ansible)
+		then, run glusterfs-install.sh on each glusterfs node
+		(using ansible)
+		after the installation, replace VOL_FOR_GLUSTER item in script config-glusterfs.sh according to yout practical situation 
+		then, run the script on each glusterfs node
+		(using ansible)
 
-2. config glusterfs
-===
-2.1 config /etc/hosts
 ---
-replace the information of hosts in script config-etc-hosts.sh according to yout practical situation
-then, run the script on each glusterfs node
-(using ansible)
+2.config glusterfs
+===
+2.1config /etc/hosts
+---
+		replace the information of hosts in script config-etc-hosts.sh according to yout practical situation
+		then, run the script on each glusterfs node
+		(using ansible)
 2.2 add glusterfs nodes into the glusterfs cluster 
 ---
-!!! only run this on one node
-for example, there are three nodes in the cluster, which are node-1, node-2 and node-3
-on node-1, run:
-$ gluster peer probe node-2
-$ gluster peer probe node-3
+		!!! only run this on one node
+		for example, there are three nodes in the cluster, which are node-1, node-2 and node-3
+		on node-1, run:
+<pre><code>$ gluster peer probe node-2
+$ gluster peer probe node-3</code></pre>
 
 ---
 after that, run:

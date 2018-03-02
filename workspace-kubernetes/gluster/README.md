@@ -7,7 +7,7 @@ on each glusterfs node<br>
 
 ###1. install glusterfs
 ===
-modify field named GlusterVer in script glusterfs-install.sh to set expected version
+		modify field named GlusterVer in script glusterfs-install.sh to set expected version
 then, run glusterfs-install.sh on each glusterfs node
 (using ansible)
 after the installation, replace VOL_FOR_GLUSTER item in script config-glusterfs.sh according to yout practical situation 

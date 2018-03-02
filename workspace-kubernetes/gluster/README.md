@@ -84,7 +84,8 @@ subsets:
 5.2 apply service 
 ---
 		for instace:
-<pre><code>$ cat glusterfs-service.yaml
+```console
+$ cat glusterfs-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -95,6 +96,7 @@ spec:
   - port: 1990
     protocol: TCP
     targetPort: 1990</code></pre>
+```
 
 After all above, your can create pv and pvc objects to use gluster distributed file system.
 ---

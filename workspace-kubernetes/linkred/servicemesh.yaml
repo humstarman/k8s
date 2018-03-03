@@ -243,11 +243,11 @@ data:
       dtab: |
         /srv => /#/io.l5d.k8s/default/grpc ;             # /srv/service/package -> /#/io.l5d.k8s/default/grpc/service/package
         /svc => /$/io.buoyant.http.domainToPathPfx/srv ; # /svc/package.service -> /srv/service/package
-    # HTTP Ingress Controller listening on port 80
+    # HTTP Ingress Controller listening on port 8082
     - protocol: http
       label: http-ingress
       servers:
-        - port: 80
+        - port: 8082
           ip: 0.0.0.0
           clearContext: true
       identifier:
@@ -316,7 +316,7 @@ spec:
         - name: grpc-incoming
           containerPort: 4341
         - name: http-ingress
-          containerPort: 80
+          containerPort: 8082
         - name: h2-ingress
           containerPort: 8081
         volumeMounts:
@@ -356,6 +356,6 @@ spec:
   - name: grpc-incoming
     port: 4341
   - name: http-ingress
-    port: 80
+    port: 8082
   - name: h2-ingress
     port: 8081

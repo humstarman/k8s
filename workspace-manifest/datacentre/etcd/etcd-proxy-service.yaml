@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: datacentre
   labels:
     proxy: etcd
   name: etcd-proxy

@@ -1,6 +1,7 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet 
 metadata:
+  namespace: datacentre
   name: cassandra-master
 spec:
   serviceName: "cassandra-master"

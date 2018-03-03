@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: datacentre
+  name: glusterfs-cluster
+spec:
+  type: ClusterIP
+  ports:
+  - port: 1990
+    protocol: TCP
+    targetPort: 1990
+

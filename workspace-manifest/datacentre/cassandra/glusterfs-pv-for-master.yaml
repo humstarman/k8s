@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
+  namespace: datacentre
   name: gluster-cassandra-volume-for-master
 spec:
   capacity:

@@ -1,6 +1,7 @@
 kind: StatefulSet
 apiVersion: apps/v1beta1
 metadata:
+  namespace: datacentre
   name: hadoop-worker
 spec:
   serviceName: "hadoop-worker"

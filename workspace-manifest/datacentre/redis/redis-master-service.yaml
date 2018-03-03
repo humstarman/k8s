@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: datacentre
   labels:
     svc: redis-master
   name: redis-master

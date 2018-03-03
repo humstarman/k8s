@@ -33,5 +33,4 @@ spec:
       volumes:
       - name: gluster-volume
         persistentVolumeClaim:
-          claimName: glusterfs-cassandra-for-master
-
+          claimName: glusterfs-pvc

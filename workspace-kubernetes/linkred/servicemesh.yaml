@@ -108,7 +108,7 @@ data:
     # Usage is used for anonymized usage reporting.  You can set the orgId to
     # identify your organization or set `enabled: false` to disable entirely.
     usage:
-      orgId: linkerd-examples-servicemesh
+      orgId: linkerd-examples-servicemesh-cni
     # Routers define how Linkerd actually handles traffic.  Each router listens
     # for requests, applies routing rules to those requests, and proxies them
     # to the appropriate destinations.  Each router is protocol specific.
@@ -198,7 +198,7 @@ data:
         kind: default
         transformers:
         - kind: io.l5d.k8s.localnode
-          # hostNetwork: true # Uncomment if using host networking (eg for CNI)
+          hostNetwork: true # Uncomment if using host networking (eg for CNI)
       dtab: |
         /k8s => /#/io.l5d.k8s ;                             # /k8s/default/h2/foo -> /#/io.l5d.k8s/default/h2/foo
         /portNsSvc => /#/portNsSvcToK8s ;                   # /portNsSvc/h2/default/foo -> /k8s/default/h2/foo
@@ -239,7 +239,7 @@ data:
         kind: default
         transformers:
         - kind: io.l5d.k8s.localnode
-          # hostNetwork: true # Uncomment if using host networking (eg for CNI)
+          hostNetwork: true # Uncomment if using host networking (eg for CNI)
       dtab: |
         /srv => /#/io.l5d.k8s/default/grpc ;             # /srv/service/package -> /#/io.l5d.k8s/default/grpc/service/package
         /svc => /$/io.buoyant.http.domainToPathPfx/srv ; # /svc/package.service -> /srv/service/package
@@ -253,12 +253,12 @@ data:
       identifier:
         kind: io.l5d.ingress
       dtab: /svc => /#/io.l5d.k8s
-    # HTTP/2 Ingress Controller listening on port 8080
+    # HTTP/2 Ingress Controller listening on port 8081
     - protocol: h2
       experimental: true
       label: h2-ingress
       servers:
-        - port: 8080
+        - port: 8081
           ip: 0.0.0.0
           clearContext: true
       identifier:
@@ -278,7 +278,8 @@ spec:
       labels:
         app: l5d
     spec:
-      # hostNetwork: true # Uncomment to use host networking (eg for CNI)
+      hostNetwork: true # Uncomment to use host networking (eg for CNI)
+      dnsPolicy: ClusterFirstWithHostNet
       volumes:
       - name: l5d-config
         configMap:
@@ -303,6 +304,7 @@ spec:
           hostPort: 4140
         - name: http-incoming
           containerPort: 4141
+          hostPort: 4141
         - name: h2-outgoing
           containerPort: 4240
           hostPort: 4240
@@ -316,7 +318,7 @@ spec:
         - name: http-ingress
           containerPort: 80
         - name: h2-ingress
-          containerPort: 8080
+          containerPort: 8081
         volumeMounts:
         - name: "l5d-config"
           mountPath: "/io.buoyant/linkerd/config"
@@ -356,4 +358,4 @@ spec:
   - name: http-ingress
     port: 80
   - name: h2-ingress
-    port: 8080
+    port: 8081

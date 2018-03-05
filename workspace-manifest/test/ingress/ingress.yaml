@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: linkerd-ingress
+  namespace: default
+spec:
+  rules:
+  - host: linkerd.product.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: product-proxy 
+          servicePort: 8080
+  - host: linkerd.test.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: test-proxy 
+          servicePort: 8080

@@ -45,30 +45,3 @@ roleRef:
   kind: ClusterRole
   name: namerd-dtab-storage
   apiGroup: rbac.authorization.k8s.io
----
-kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  name: linkerd-role-binding-in-namespace-linkerd
-subjects:
-  - kind: ServiceAccount
-    name: default
-    namespace: linkerd
-roleRef:
-  kind: ClusterRole
-  name: linkerd-endpoints-reader
-  apiGroup: rbac.authorization.k8s.io
----
-kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  name: namerd-role-binding
-subjects:
-  - kind: ServiceAccount
-    name: default
-    namespace: linkerd
-roleRef:
-  kind: ClusterRole
-  name: namerd-dtab-storage
-  apiGroup: rbac.authorization.k8s.io
-

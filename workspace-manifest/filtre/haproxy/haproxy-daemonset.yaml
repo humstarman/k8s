@@ -30,8 +30,6 @@ spec:
         livenessProbe:
           exec:
             command:
-            - /bin/bash
-            - -c
             - /liveness-probe.sh
           initialDelaySeconds: 15
           periodSeconds: 5

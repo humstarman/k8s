@@ -1,0 +1,60 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  namespace: datacentre
+  name: mysql-mgm-config
+data:
+  config.ini: |-
+    [ndbd default]
+    NoOfReplicas=1
+    DataMemory=80M
+    IndexMemory=18M
+    ServerPort=2202
+    [ndb_mgmd]
+    HostName={{ip.addr}}
+    DataDir=/var/lib/mysql-cluster
+  ndbd.template: |-
+    [ndbd]
+    HostName={{ip.addr}}
+    NodeId={{node.id}}
+    DataDir=/usr/local/mysql/data
+  sqld.template: |-
+    [mysqld]
+    HostName={{ip.addr}} 
+  start-mgm.sh: |-
+    #!/bin/bash
+    set -e
+    TRY=10
+    DSCV="mysql-ndb"
+    INFO=$(getent hosts $DSCV)
+    if [ -z "$INFO" ]; then
+      echo "=== Cannot resolve the DNS entry for $DSCV. Has the service been created yet, and is SkyDNS functional?"
+      echo "=== See http://kubernetes.io/v1.1/docs/admin/dns.html for more details on DNS integration."
+      echo "=== Sleeping 10s before pod exit."
+      sleep 10
+      exit 0
+    fi
+    cp /etc/config/config.ini /tmp
+    sed -i "s/{{ip.addr}}/${POD_IP}/g" /tmp/config.ini
+    N=$(echo $INFO | wc | awk -F ' ' '{print $2}')
+    N=$[N/2]
+    for i in $(seq -s ' ' 0 $[N-1]); do 
+      ID=$[101+$i]
+      echo $ID
+      IP=$(getent hosts ${DSCV}-$i.${DSCV} | awk -F ' ' '{print $1}')
+      j=0
+      while [ -z "$IP" ]; do
+        j=$[j+1]
+        if [ "$TRY" -lt "$j" ]; then
+          exit 0
+        fi
+        IP=$(getent hosts ${DSCV}-$i.${DSCV} | awk -F ' ' '{print $1}')
+      done
+      echo $IP
+      echo '' >> /tmp/config.ini
+      cat /etc/config/ndbd.template >> /tmp/config.ini
+      sed -i "s/{{ip.addr}}/${IP}/g" /tmp/config.ini
+      sed -i "s/{{node.id}}/${ID}/g" /tmp/config.ini
+    done
+    while true; do sleep 60; done
+

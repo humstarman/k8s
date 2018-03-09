@@ -1,0 +1,50 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet 
+metadata:
+  namespace: datacentre
+  name: mysql-ndb
+spec:
+  serviceName: "mysql-ndb"
+  podManagementPolicy: Parallel
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        component: mysql-ndb
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: placeholder
+        image: busybox
+        command:
+        - /bin/sh
+        - -c
+        - "sleep 100"
+      - name: mysql-ndb
+        image: 172.31.78.217:5000/mysql-data-node:v1
+        command:
+        - "/etc/config/start-ndbd.sh"
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: DSCV
+          value: mysql-mgm
+        volumeMounts:
+        - name: mysql-other-config
+          mountPath: /etc/config
+          readOnly: true
+        - name: gluster-volume
+          mountPath: "/mnt"
+        ports:
+        - containerPort: 1186 
+        - containerPort: 2202 
+      volumes:
+      - name: gluster-volume
+        persistentVolumeClaim:
+          claimName: glusterfs-pvc
+      - name: mysql-other-config 
+        configMap:
+          name: mysql-other-config
+          defaultMode: 0755

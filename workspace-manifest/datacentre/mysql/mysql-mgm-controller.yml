@@ -1,0 +1,41 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet 
+metadata:
+  namespace: datacentre
+  name: mysql-mgm
+spec:
+  serviceName: "mysql-mgm"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: mysql-mgm
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: mysql-mgm
+        image: 172.31.78.217:5000/mysql-mgm-node:v1
+        command:
+        - "/etc/config/start-mgm.sh"
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        volumeMounts:
+        - name: mysql-mgm-config 
+          mountPath: /etc/config
+          readOnly: true
+        - name: gluster-volume
+          mountPath: "/mnt"
+        ports:
+        - containerPort: 1186 
+        - containerPort: 2202 
+      volumes:
+      - name: gluster-volume
+        persistentVolumeClaim:
+          claimName: glusterfs-pvc
+      - name: mysql-mgm-config 
+        configMap:
+          name: mysql-mgm-config
+          defaultMode: 0755

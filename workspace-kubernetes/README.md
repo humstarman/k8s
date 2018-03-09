@@ -3,6 +3,7 @@
 		set two groups for ansible:
 * master 
 * node
+
 		and, put all the hosts in the front of the config file. 
 		batch mkdirs		
 ```sh

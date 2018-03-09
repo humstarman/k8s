@@ -1,8 +1,8 @@
 0.prepare 
 ===
 		set two groups for ansible:
-		* master 
-		* node
+* master 
+* node
 		and, put all the hosts in the front of the config file. 
 		batch mkdirs		
 ```sh

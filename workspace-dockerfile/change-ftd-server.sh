@@ -12,5 +12,5 @@ TO="$MARKER $FTP_SERVER"
 DOCKERFILES=$(find ./ -name "Dockerfile*" -type f)
 
 for DOCKERFILE in $DOCKERFILES; do
-  sed -i "/${MARKER}/ c $TO" $DOCKERFILE
+  sed -i "/^${MARKER}/ c $TO" $DOCKERFILE
 done

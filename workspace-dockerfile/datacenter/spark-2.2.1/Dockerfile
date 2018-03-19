@@ -33,8 +33,10 @@ RUN mkdir -p /opt && \
 
 # Add the GCS connector.
 #RUN mv /opt/gcs-connector-latest-hadoop2.jar /opt/spark/lib
-RUN cd /opt/spark/lib && \
-    curl -o gcs-connector-latest-hadoop2.jar ftp://${ftp_server}/gcs-connector-latest-hadoop2.jar
+RUN mkdir -p /opt/spark/lib && \
+    cd /opt/spark/lib && \
+    curl -O ftp://${ftp_server}/gcs-connector-latest-hadoop2.jar
+    #curl -o gcs-connector-latest-hadoop2.jar ftp://${ftp_server}/gcs-connector-latest-hadoop2.jar
 
 # if numpy is installed on a driver it needs to be installed on all
 # workers, so install it everywhere\

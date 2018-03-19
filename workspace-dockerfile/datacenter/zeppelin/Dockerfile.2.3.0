@@ -15,7 +15,7 @@
 # This image relies on the zeppelin-build image to get the zeppelin
 # binaries built, and the Makefile to put it in this directory.
 
-FROM 172.31.78.217:5000/spark:2.2.1
+FROM 172.31.78.217:5000/spark:2.3.0
 
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 RUN (echo '9ol.8ik,';sleep 1;echo '9ol.8ik,') | passwd root
@@ -32,7 +32,7 @@ RUN mkdir -p /opt && \
     echo Zeppelin ${ZEPPELIN_VER} installed in /opt
 
 ADD zeppelin-log4j.properties /opt/zeppelin/conf/log4j.properties
-ADD zeppelin-env.sh /opt/zeppelin/conf/zeppelin-env.sh
+ADD zeppelin-env.sh.2.3.0 /opt/zeppelin/conf/zeppelin-env.sh
 ADD docker-zeppelin.sh /opt/zeppelin/bin/docker-zeppelin.sh
 EXPOSE 8080
 ENTRYPOINT ["/opt/zeppelin/bin/docker-zeppelin.sh"]

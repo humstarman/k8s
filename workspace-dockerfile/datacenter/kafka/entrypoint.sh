@@ -37,11 +37,11 @@ done
 ZK_HOSTS=${ZK_HOSTS#*,}
 echo "$(date) - $0 - zk info: $ZK_HOSTS"
 
-[ -e /var/lib/kafka ] || mkdir -p /var/lib/kafka
-sed -i "s/broker.id=0/broker.id=${ID}/g" /opt/kafka/config/server.properties
-sed -i "s/log.dirs=\/tmp\/kafka-logs/log.dirs=\/var\/lib\/kafka/g" /opt/kafka/config/server.properties
+[ -e /mnt/$(hostname -s) ] || mkdir -p /mnt/$(hostname -s)
+sed -i "s/{{broker.id}}/${ID}/g" /opt/kafka/config/server.properties
+sed -i "s/\/tmp\/kafka-logs/\/mnt\/$(hostname -s)/g" /opt/kafka/config/server.properties
 #sed -i "s/\#delete.topic.enable=true/delete.topic.enable=true/g" /opt/kafka/config/server.properties
-sed -i "s/zookeeper.connect=localhost:2181/zookeeper.connect=${ZK_HOSTS}/g" /opt/kafka/config/server.properties
+sed -i "s/{{zookeeper.nodes}}/${ZK_HOSTS}/g" /opt/kafka/config/server.properties
 echo -e "\n\nlog.cleaner.enable=true\n" >> /opt/kafka/config/server.properties
 
 /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties

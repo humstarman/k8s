@@ -14,13 +14,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if ! getent hosts $DSCV; then
-  echo "=== Cannot resolve the DNS entry for $DSCV. Has the service been created yet, and is SkyDNS functional?"
-  echo "=== See http://kubernetes.io/v1.1/docs/admin/dns.html for more details on DNS integration."
-  echo "=== Sleeping 10s before pod exit."
-  sleep 10
-  exit 0
-fi
+WAIT="10"
+i=0
+while true; do 
+  if [ "$i" -gt "$TRIES" ]; then
+    echo "=== Cannot resolve the DNS entry for $DSCV. Has the service been created yet, and is SkyDNS functional?"
+    echo "=== See http://kubernetes.io/v1.1/docs/admin/dns.html for more details on DNS integration."
+    echo "=== Sleeping ${WAIT}s before pod exit."
+    sleep $WAIT
+    exit 0
+  fi
+  if ! getent hosts $DSCV; then
+    i=$[i+1]
+    sleep 1
+  else
+    break;
+  fi
+done
 
 . /start-common.sh
 
@@ -28,21 +38,18 @@ service ssh start
 
 MASTER=$(getent hosts $DSCV | awk -F ' ' '{print $1}')
 echo "$(date) - $0 - master ip: $MASTER"
-#/opt/auto-cp-ssh-id.sh root $PASSWD $MASTER
+#/opt/auto-cp-ssh-id.sh root $SSH_PASSWD $MASTER
 
 HADOOP_HOME=/opt/hadoop
-#HADOOP_PREFIX=${HADOOP_HOME}
-#HADOOP_CONF_DIR="${HADOOP_HOME/etc/hadoop}"
-#HADOOP_YARN_HOME=${HADOOP_HOME}
+HADOOP_PREFIX=${HADOOP_HOME}
+HADOOP_CONF_DIR="${HADOOP_HOME}/etc/hadoop"
+HADOOP_YARN_HOME=${HADOOP_HOME}
+
+[ -e /mnt/$(hostname -s) ] || mkdir -p /mnt/$(hostname -s)
 
 sed -i "s/hadoop-master/$MASTER/" $HADOOP_HOME/etc/hadoop/core-site.xml
 sed -i "s/hadoop-master/$MASTER/" $HADOOP_HOME/etc/hadoop/yarn-site.xml
-
-#$HADOOP_HOME/bin/hdfs --daemon start datanode
-#$HADOOP_HOME/bin/yarn --daemon start nodemanager
-#$HADOOP_PREFIX/sbin/hadoop-daemons.sh --config $HADOOP_CONF_DIR --script hdfs start datanode &
-#$HADOOP_YARN_HOME/sbin/yarn-daemons.sh --config $HADOOP_CONF_DIR start nodemanager &
-$HADOOP_HOME/sbin/hadoop-daemon.sh start datanode &
-$HADOOP_HOME/sbin/yarn-daemon.sh start nodemanager &
-
+sed -i "s/{{}}/mnt\/$(hostname -s)/" $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+ 
+$HADOOP_PREFIX/sbin/hadoop-daemons.sh --config $HADOOP_CONF_DIR --script hdfs start datanode
 tail -f /dev/null 

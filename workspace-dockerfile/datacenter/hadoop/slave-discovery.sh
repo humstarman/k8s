@@ -2,13 +2,22 @@
 
 :(){
 WAIT="10"
-if ! getent hosts $DSCV; then
-  echo "=== Cannot resolve the DNS entry for $DSCV. Has the service been created yet, and is SkyDNS functional?"
-  echo "=== See http://kubernetes.io/v1.1/docs/admin/dns.html for more details on DNS integration."
-  echo "=== Sleeping ${WAIT}s before pod exit."
-  sleep $WAIT
-  exit 0
-fi
+i=0
+while true; do 
+  if [ "$i" -gt "$TRIES" ]; then
+    echo "=== Cannot resolve the DNS entry for $DSCV. Has the service been created yet, and is SkyDNS functional?"
+    echo "=== See http://kubernetes.io/v1.1/docs/admin/dns.html for more details on DNS integration."
+    echo "=== Sleeping ${WAIT}s before pod exit."
+    sleep $WAIT
+    return 
+  fi
+  if ! getent hosts $DSCV; then
+    i=$[i+1]
+    sleep 1
+  else
+    break;
+  fi
+done
 
 THIS_IP=$(hostname -i)
 HADOOP_HOME=/opt/hadoop
@@ -38,7 +47,6 @@ done
 
 # update /etc/hosts
 N=$(echo $IPS | wc | awk -F ' ' '{print $2}')
-TRIES=10
 for i in $(seq -s ' ' 0 $[$N-1]); do
   NAME="${DSCV}-${i}"
   TRY=0

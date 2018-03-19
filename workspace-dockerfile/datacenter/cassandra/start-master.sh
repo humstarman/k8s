@@ -4,8 +4,7 @@ set -e
 
 service ssh start
 
-THIS_IP=$(hostname -i)
-SEED=${THIS_IP}
+SEED=${POD_IP}
 echo "$(date) - $0 - seed: $SEED"
 
 # mk config
@@ -16,16 +15,16 @@ echo "$(date) - $0 - seed: $SEED"
 # write to $CASSANDRA_HOME/confUcp /opt/cassandra/conf/${CLUSTER_TYPE}.yaml $HOME/conf
 
 # 1 cluster name
-sed -i "s/cluster_name: 'Test Cluster'/cluster_name: '${CLUSTER_NAME}'/g" /opt/cassandra/conf/cassandra.yaml
+sed -i "s/{{cluster.name}}/${CLUSTER_NAME}/g" /opt/cassandra/conf/cassandra.yaml
 
 # 2 seed
-sed -i "s/- seeds: \"a.b.c.d,a.b.c.d\"/        - seeds: \"$SEED\"/g" /opt/cassandra/conf/cassandra.yaml
+sed -i "s/{{seed.ip}}/$SEED/g" /opt/cassandra/conf/cassandra.yaml
 
 # 3 listen address
-sed -i "s/listen_address: a.b.c.d/listen_address: ${THIS_IP}/g" /opt/cassandra/conf/cassandra.yaml
+sed -i "s/{{pod.ip}}/${POD_IP}/g" /opt/cassandra/conf/cassandra.yaml
 
 # 4 listen address
-sed -i "s/rpc_address: a.b.c.d/rpc_address: ${THIS_IP}/g" /opt/cassandra/conf/cassandra.yaml
+sed -i "s/{{pod.ip}}/${POD_IP}/g" /opt/cassandra/conf/cassandra.yaml
 
 # 5 data file directories 
 sed -i "s/var\/lib/mnt\/$(hostname -s)/g" /opt/cassandra/conf/cassandra.yaml

@@ -4,9 +4,10 @@ set -e
 
 service ssh start
 
-THIS_IP=$(hostname -i)
+THIS_IP=${POD_IP}
 
-sed -i "s/bind 127.0.0.1/bind ${THIS_IP}/g" /opt/redis/redis.conf
+sed -i "s/{{pod.ip}}/${THIS_IP}/g" /opt/redis/redis.conf
+sed -i "s/{{pv.dir}}/\/mnt\/$(hostname -s)/g" /opt/redis/redis.conf
 sed -i "s/# maxmemory <bytes>/maxmemory $[25*1024*1024*1024]/g" /opt/redis/redis.conf
 
 if [ "$ROLE" == "MASTER" ]; then

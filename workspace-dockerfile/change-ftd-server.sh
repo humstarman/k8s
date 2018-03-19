@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 FTP_SERVER=$1
 if [ -z "$FTP_SERVER" ]; then
   echo "[ERROR] - input the info of ftp server, in term of IP:PORT"

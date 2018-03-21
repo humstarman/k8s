@@ -1,0 +1,44 @@
+! Configuration File for keepalived
+
+global_defs {
+   notification_email {
+   }
+   router_id kube_api
+}
+
+vrrp_script check_haproxy {
+    # 自身状态检测
+    script "/etc/keepalived/chk.sh"
+    interval 3
+    weight 5
+}
+
+vrrp_instance haproxy-vip {
+    # 使用单播通信，默认是组播通信
+    unicast_src_ip 172.31.78.215 
+    unicast_peer {
+        172.31.78.216
+        172.31.78.217
+    }
+    # 初始化状态
+    state MASTER
+    # 虚拟ip 绑定的网卡 （这里根据你自己的实际情况选择网卡）
+    interface eth0
+    use_vmac
+    # 此ID 要与Backup 配置一致
+    virtual_router_id 51
+    # 默认启动优先级，要比Backup 大点，但要控制量，保证自身状态检测生效
+    priority 101
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    virtual_ipaddress {
+        # 虚拟ip 地址
+        172.31.78.200/20
+    }
+    track_script {
+        check_proxy
+    }
+}

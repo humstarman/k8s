@@ -15,7 +15,6 @@ ExecStart=/usr/local/bin/kubelet \
   --hostname-override=${NODE_IP} \
   --bootstrap-kubeconfig=/etc/kubernetes/bootstrap.kubeconfig \
   --kubeconfig=/etc/kubernetes/kubelet.kubeconfig \
-  --require-kubeconfig \
   --cert-dir=/etc/kubernetes/ssl \
   --cluster-dns=${CLUSTER_DNS_SVC_IP} \
   --cluster-domain=${CLUSTER_DNS_DOMAIN} \

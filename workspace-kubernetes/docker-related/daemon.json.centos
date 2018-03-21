@@ -1,0 +1,19 @@
+{
+  "data-root": "/opt/docker",
+  "registry-mirror" : [
+    "https://docker.mirrors.ustc.edu.cn",
+    "hub-mirror.c.163.com"
+  ],
+  "insecure-registries" : [
+    "192.168.0.0/16",
+    "172.0.0.0/8",
+    "10.0.0.0/8"
+  ],
+  "debug" : true,
+  "experimental" : true,
+  "max-concurrent-downloads" : 10,
+  "storage-driver": "overlay2",
+  "storage-opts": [
+    "overlay2.override_kernel_check=true"
+  ]
+}

@@ -18,7 +18,6 @@ ExecStart=/usr/local/bin/kubelet \
   --hostname-override=${NODE_IP} \
   --bootstrap-kubeconfig=/etc/kubernetes/bootstrap.kubeconfig \
   --kubeconfig=/etc/kubernetes/kubelet.kubeconfig \
-  --require-kubeconfig \
   --cert-dir=/etc/kubernetes/ssl \
   --cluster-dns=${CLUSTER_DNS_SVC_IP} \
   --cluster-domain=${CLUSTER_DNS_DOMAIN} \
@@ -27,7 +26,7 @@ ExecStart=/usr/local/bin/kubelet \
   --serialize-image-pulls=false \
   --logtostderr=true \
   --pod-manifest-path=/etc/kubernetes/manifests \
-  --v=2
+  --v=0
 ExecStartPost=/sbin/iptables -A INPUT -s 10.0.0.0/8 -p tcp --dport 4194 -j ACCEPT
 ExecStartPost=/sbin/iptables -A INPUT -s 172.17.0.0/12 -p tcp --dport 4194 -j ACCEPT
 ExecStartPost=/sbin/iptables -A INPUT -s 192.168.1.0/16 -p tcp --dport 4194 -j ACCEPT

@@ -1,0 +1,31 @@
+#!/bin/bash
+
+CONFUSE=$(getent hosts $DSCV)
+echo "$(date) - $0 - confuse info: $CONFUSE"
+WAIT="10"
+if ! getent hosts $DSCV; then
+  echo "=== Cannot resolve the DNS entry for $DSCV. Has the service been created yet, and is SkyDNS functional?"
+  echo "=== See http://kubernetes.io/v1.1/docs/admin/dns.html for more details on DNS integration."
+  echo "=== Sleeping ${WAIT}s before pod exit."
+  sleep $WAIT
+  exit 0
+fi
+
+HADOOP_HOME=/opt/hadoop
+LOG=$HADOOP_HOME/logs/slave-discovery.log
+
+j=0
+for ip in $CONFUSE; do
+  if [[ $ip =~ ^([0-9]{1,2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.([0-9]{1,2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.([0-9]{1,2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.([0-9]{1,2}|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$ ]]; then
+    SLAVE=$ip
+    if [ "0" == "$j" ]; then
+      echo $SLAVE > $HADOOP_HOME/etc/hadoop/workers
+    else
+      echo $SLAVE >> $HADOOP_HOME/etc/hadoop/workers
+    fi
+    /opt/auto-cp-ssh-id.sh root $PASSWD $SLAVE
+  else
+    echo "$(date) - $0 - salve ip -> $SLAVE, name -> $ip, in the cluster.)" > $LOG
+  fi
+  j=$[$j+1]
+done

@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Copyright 2015 The Kubernetes Authors All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+WAIT="10"
+i=0
+while true; do 
+  if [ "$i" -gt "$TRIES" ]; then
+    echo "=== Cannot resolve the DNS entry for $DSCV. Has the service been created yet, and is SkyDNS functional?"
+    echo "=== See http://kubernetes.io/v1.1/docs/admin/dns.html for more details on DNS integration."
+    echo "=== Sleeping ${WAIT}s before pod exit."
+    sleep $WAIT
+    exit 0
+  fi
+  if ! getent hosts $DSCV; then
+    i=$[i+1]
+    sleep 1
+  else
+    break;
+  fi
+done
+
+. /start-common.sh
+
+service ssh start
+
+MASTER=$(getent hosts $DSCV | awk -F ' ' '{print $1}')
+echo "$(date) - $0 - master ip: $MASTER"
+#/opt/auto-cp-ssh-id.sh root $SSH_PASSWD $MASTER
+
+HADOOP_HOME=/opt/hadoop
+HADOOP_PREFIX=${HADOOP_HOME}
+HADOOP_CONF_DIR="${HADOOP_HOME}/etc/hadoop"
+HADOOP_YARN_HOME=${HADOOP_HOME}
+
+[ -e /mnt/$(hostname -s) ] || mkdir -p /mnt/$(hostname -s)
+
+sed -i "s/hadoop-master/$MASTER/" $HADOOP_HOME/etc/hadoop/core-site.xml
+sed -i "s/hadoop-master/$MASTER/" $HADOOP_HOME/etc/hadoop/yarn-site.xml
+sed -i "s/{{}}/mnt\/$(hostname -s)/" $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+ 
+$HADOOP_PREFIX/sbin/hadoop-daemons.sh --config $HADOOP_CONF_DIR --script hdfs start datanode
+tail -f /dev/null 

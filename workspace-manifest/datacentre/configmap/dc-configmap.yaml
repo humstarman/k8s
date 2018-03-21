@@ -6,3 +6,7 @@ metadata:
 data:
   dc.net-id: "172.30"
   cassandra.cluster-name: "test0x00"
+  etcd.token: "token-0x00"
+  tries: "10"
+  hadoop.prefix: "/opt/hadoop"
+  hadoop.conf.dir: "/opt/hadoop/etc/hadoop"

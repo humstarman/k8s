@@ -14,9 +14,13 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: cassandra-master
-        image: 172.31.78.217:5000/cassandra
+        image: 172.31.78.217:5000/cassandra:v2
         command: ["/start-master.sh"]
         env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         - name: CLUSTER_NAME
           valueFrom:
             configMapKeyRef:

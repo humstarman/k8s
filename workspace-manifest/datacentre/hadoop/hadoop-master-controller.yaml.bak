@@ -1,0 +1,53 @@
+kind: StatefulSet 
+apiVersion: apps/v1beta1
+metadata:
+  namespace: datacentre
+  name: hadoop-master-controller
+spec:
+  serviceName: "hadoop-master"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: hadoop-master
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: hadoop-master
+        image: 172.31.78.217:5000/hadoop:v1
+        command: ["/start-master"]
+        env:
+        - name: DSCV
+          value: hadoop-worker
+        - name: INTERVAL 
+          value: "10" 
+        - name: SSH_PASSWD 
+          valueFrom:
+            secretKeyRef:
+              name: dc-ssh-passwd 
+              key: ssh.passwd
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: TRIES
+          valueFrom:
+            configMapKeyRef:
+              name: dc-config
+              key: tries
+        ports:
+        - containerPort: 3333
+        - containerPort: 8000
+        - containerPort: 8088
+        - containerPort: 50070
+        resources:
+          requests:
+            cpu: 100m
+            memory: 2000Mi
+        volumeMounts:
+        - name: gluster-volume
+          mountPath: "/mnt"
+      volumes:
+      - name: gluster-volume
+        persistentVolumeClaim:
+          claimName: glusterfs-pvc

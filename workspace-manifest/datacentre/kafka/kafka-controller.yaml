@@ -1,0 +1,40 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  namespace: datacentre
+  name: kafka
+spec:
+  serviceName: "kafka"
+  podManagementPolicy: Parallel
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        component: kafka
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: kafka
+        image: 172.31.78.217:5000/kafka:v1
+        command: ["/entrypoint.sh"]
+        env:
+        - name: N_NODES
+          value: "3"
+        - name: DSCV
+          value: "zookeeper"
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: TRIES
+          valueFrom:
+            configMapKeyRef:
+              name: dc-config
+              key: tries 
+        volumeMounts:
+        - name: gluster-volume
+          mountPath: "/mnt"
+      volumes:
+      - name: gluster-volume
+        persistentVolumeClaim:
+          claimName: glusterfs-pvc

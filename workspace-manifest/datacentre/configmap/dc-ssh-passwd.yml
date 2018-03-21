@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dc-ssh-passwd 
+  namespace: datacentre
+type: Opaque
+data:
+  ssh.passwd: OW9sLjhpayw=

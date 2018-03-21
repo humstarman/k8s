@@ -67,5 +67,26 @@ fi
 
 iptables -P FORWARD ACCEPT
 iptables -F && iptables -X && iptables -F -t nat && iptables -X -t nat
+# mk docker-iptables.sh
+#yes | cp docker-iptables.sh /usr/local/bin
+echo -e '#!/bin/bash' > /usr/local/bin/docker-iptables.sh
+echo -e 'sleep 60 && /sbin/iptables -P FORWARD ACCEPT' >> /usr/local/bin/docker-iptables.sh
+chmod +x /usr/local/bin/docker-iptables.sh
+# mk docker-iptables.service
+#cp docker-iptables.service /etc/systemd/system
+echo -e '[Unit]' > /etc/systemd/system/docker-iptables.servcie
+echo -e 'Description=Make Iptables Rules for Docker' >> /etc/systemd/system/docker-iptables.servcie
+echo -e '' >> /etc/systemd/system/docker-iptables.servcie
+echo -e '[Service]' >> /etc/systemd/system/docker-iptables.servcie
+echo -e 'Type=oneshot' >> /etc/systemd/system/docker-iptables.servcie
+echo -e 'ExecStart=/usr/local/bin/docker-iptables.sh' >> /etc/systemd/system/docker-iptables.servcie
+echo -e '' >> /etc/systemd/system/docker-iptables.servcie
+echo -e '[Install]' >> /etc/systemd/system/docker-iptables.servcie
+echo -e 'WantedBy=multi-user.target' >> /etc/systemd/system/docker-iptables.servcie
+
+systemctl daemon-reload
 systemctl enable docker
 systemctl start docker
+
+systemctl enable docker-iptables.service
+systemctl start docker-iptables.service

@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: datacentre
+  name: cass-driver
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: cass-driver
+    spec:
+      containers:
+      - name: cass-driver
+        image: 172.31.78.217:5000/cassandra-python-driver:v1 
+        command:
+        - /bin/sh
+        - -c
+        - "while true; do sleep 60; done"

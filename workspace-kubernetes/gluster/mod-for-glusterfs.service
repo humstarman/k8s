@@ -1,0 +1,9 @@
+[Unit]
+Description=Switch-on Kernel Modules Needed by Glusterfs
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/switch-on-kernel-modules.sh
+
+[Install]
+WantedBy=multi-user.target

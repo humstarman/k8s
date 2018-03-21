@@ -1,0 +1,46 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  namespace: datacentre
+  name: etcd
+spec:
+  serviceName: "etcd"
+  podManagementPolicy: Parallel
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        component: etcd
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: etcd
+        image: 172.31.78.217:5000/etcd:v1
+        command: ["/entrypoint.sh"]
+        env:
+        - name: N_NODES
+          value: "3"
+        - name: DSCV 
+          value: "etcd"
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: TOKEN 
+          valueFrom:
+            configMapKeyRef:
+              name: dc-config
+              key: etcd.token
+        - name: TRIES
+          valueFrom:
+            configMapKeyRef:
+              name: dc-config
+              key: tries 
+        volumeMounts:
+        - name: gluster-volume
+          mountPath: "/mnt"
+      volumes:
+      - name: gluster-volume
+        persistentVolumeClaim:
+          claimName: glusterfs-pvc
+

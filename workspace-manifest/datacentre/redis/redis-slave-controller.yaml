@@ -1,23 +1,50 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1beta1
+kind: StatefulSet 
 metadata:
   namespace: datacentre
   name: redis-slave
 spec:
+  serviceName: "redis-slave"
+  podManagementPolicy: Parallel
   replicas: 3
   template:
     metadata:
       labels:
         component: redis-slave
     spec:
+      terminationGracePeriodSeconds: 10
       containers:
       - name: redis-slave
-        image: 172.31.78.217:5000/redis
-        command: ["/entrypoint.sh"]
+        image: 172.31.78.217:5000/redis:4.0.7
+        command: ["/etc/scripts/entrypoint.active-backup.sh"]
         env:
         - name: DSCV
           value: redis-master
         - name: ROLE
           value: SLAVE 
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: TRIES
+          valueFrom:
+            configMapKeyRef:
+              name: dc-config
+              key: tries
         ports:
-        - containerPort: 6379 
+        - containerPort: 6379
+        - containerPort: 16379
+        volumeMounts:
+        - name: "entrypoint-scripts"
+          mountPath: "/etc/scripts"
+          readOnly: true
+        - name: gluster-volume
+          mountPath: "/mnt"
+      volumes:
+      - name: entrypoint-scripts
+        configMap:
+          name: redis-entrypoint-scripts
+          defaultMode: 0755
+      - name: gluster-volume
+        persistentVolumeClaim:
+          claimName: glusterfs-pvc

@@ -18,7 +18,7 @@ spec:
       hostNetwork: true
       containers:
       - name: haproxy-node
-        image: 172.31.78.217:5000/haproxy
+        image: 172.31.78.217:5000/haproxy:v1
         command:
         - haproxy
         - -f

@@ -15,7 +15,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: cassandra-worker
-        image: 172.31.78.217:5000/cassandra
+        image: 172.31.78.217:5000/cassandra:v2
         command: ["/start-worker.sh"]
         env:
         - name: DSCV

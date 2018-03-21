@@ -1,0 +1,9 @@
+[Unit]
+Description=Make Iptables Rules for Docker
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/docker-iptables.sh
+
+[Install]
+WantedBy=multi-user.target

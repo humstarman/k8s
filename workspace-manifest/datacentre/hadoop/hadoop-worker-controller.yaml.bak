@@ -1,0 +1,52 @@
+kind: StatefulSet
+apiVersion: apps/v1beta1
+metadata:
+  namespace: datacentre
+  name: hadoop-worker-controller
+spec:
+  serviceName: "hadoop-worker"
+  podManagementPolicy: Parallel
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        component: hadoop-worker
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: hadoop-worker
+        image: 172.31.78.217:5000/hadoop:v1
+        command: ["/start-worker"]
+        env:
+        - name: DSCV
+          value: hadoop-master
+        - name: SSH_PASSWD
+          valueFrom:
+            secretKeyRef:
+              name: dc-ssh-passwd
+              key: ssh.passwd
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: TRIES
+          valueFrom:
+            configMapKeyRef:
+              name: dc-config
+              key: tries
+        ports:
+        - containerPort: 3333
+        - containerPort: 8000
+        - containerPort: 8088
+        - containerPort: 50070
+        resources:
+          requests:
+            cpu: 100m
+            memory: 2000Mi
+        volumeMounts:
+        - name: gluster-volume
+          mountPath: "/mnt"
+      volumes:
+      - name: gluster-volume
+        persistentVolumeClaim:
+          claimName: glusterfs-pvc

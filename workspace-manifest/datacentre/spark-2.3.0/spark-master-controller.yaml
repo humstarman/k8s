@@ -1,0 +1,27 @@
+kind: Deployment 
+apiVersion: extensions/v1beta1
+metadata:
+  namespace: datacentre
+  name: spark-master-controller
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: spark-master
+    spec:
+      containers:
+      - name: spark-master
+        image: 172.31.78.217:5000/spark:2.3.0
+        command: ["/start-master"]
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        ports:
+        - containerPort: 7077
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 100m

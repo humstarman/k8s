@@ -1,0 +1,28 @@
+kind: Deployment 
+apiVersion: extensions/v1beta1
+metadata:
+  namespace: datacentre
+  name: spark-ui-proxy-controller
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: spark-ui-proxy
+    spec:
+      containers:
+        - name: spark-ui-proxy
+          image: 172.31.78.217:5000/spark-ui-proxy:1.0
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+          args:
+            - spark-master:8080
+          livenessProbe:
+              httpGet:
+                path: /
+                port: 80
+              initialDelaySeconds: 120
+              timeoutSeconds: 5

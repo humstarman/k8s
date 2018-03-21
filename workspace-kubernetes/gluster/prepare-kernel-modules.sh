@@ -1,9 +1,7 @@
 #!/bin/bash
 
-MODULES="dm_snapshot dm_mirror dm_thin_pool"
-for MODULE in $MODULES; do
-  modprobe $MODULE
-done
-for MODULE in $MODULES; do
-  lsmod | grep $MODULE
-done
+cp ./switch-on-kernel-modules.sh /usr/local/bin
+cp mod-for-glusterfs.service /etc/systemd/system
+systemctl daemon-reload
+systemctl enable mod-for-glusterfs.service
+systemctl start mod-for-glusterfs.service

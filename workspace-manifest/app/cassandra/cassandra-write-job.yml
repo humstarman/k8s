@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cassandra-write-job
+  namespace: datacentre
+spec:
+  template:
+    metadata:
+      name: cassandra-write-job
+    spec:
+      containers:
+      - name: cassandra-write-job
+        image: 172.31.78.217:5000/cassandra-python-driver:v1 
+        command:
+        - /etc/scripts/write.test.py
+        - -c 
+        - 10.254.183.61
+        - -k
+        - test0x00
+        - -t
+        - thetable
+        - --ll
+        - debug
+        - -n
+        - "10000"
+        volumeMounts:
+        - name: "write-script"
+          mountPath: "/etc/scripts"
+          readOnly: true
+      volumes:
+      - name: write-script
+        configMap:
+          name: cassandra-driver-scripts 
+          defaultMode: 0755
+      restartPolicy: OnFailure 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MASTER="172.31.78.215 172.31.78.216 172.31.78.217"
+MASTER="192.168.0.41 192.168.0.42 192.168.0.43"
 
 mkdir -p ./tmp
 BOOTSTRAP_TOKEN=$(head -c 16 /dev/urandom | od -An -t x | tr -d ' ')
@@ -8,10 +8,16 @@ cp ./k8s.env ./tmp
 sed -i "/^BOOTSTRAP_TOKEN=\"/ c BOOTSTRAP_TOKEN=\"${BOOTSTRAP_TOKEN}\"" ./tmp/k8s.env
 
 ansible all -m shell -a "mkdir -p /var/env"
-
 ansible all -m copy -a "src=./tmp/k8s.env dest=/var/env"
 
-ansible all -m script -a ./put-this-ip.sh
+# token
+ansible all -m shell -a "mkdir -p /etc/kubernetes"
+echo -n -e "${BOOTSTRAP_TOKEN},kubelet-bootstrap,10001,\"system:kubelet-bootstrap\"" > ./tmp/token.csv
+ansible all -m copy -a "src=./tmp/token.csv dest=/etc/kubernetes"
+
+
+ansible master -m script -a "./put-this-ip.sh 192.168.0"
+ansible node -m script -a "./put-node-ip.sh 192.168.0"
 
 NAME=etcd
 
